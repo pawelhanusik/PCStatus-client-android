@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
             this.addProgress("P Title 1", 0, 10, "Test message 1\nnew line");
             this.addProgress("P Title 2", 7, 10, "Download done!");
             this.addProgress("P Title 3", 10, 10, "Everything is all right.");
+            this.addProgress("P Title 4", 90, 100, "Everything is all right.");
 
             for (int i = 0; i < 20; ++i) {
                 this.addNotification("Test_" + i, "message");

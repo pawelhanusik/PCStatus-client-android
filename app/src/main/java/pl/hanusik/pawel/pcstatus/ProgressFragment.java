@@ -1,5 +1,6 @@
 package pl.hanusik.pawel.pcstatus;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -62,12 +63,17 @@ public class ProgressFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_progress, container, false);
+
         TextView title = (TextView)v.findViewById(R.id.title);
-        ProgressBar progressBar = (ProgressBar)v.findViewById(R.id.progressBar);
-        TextView message = (TextView)v.findViewById(R.id.message);
         title.setText(this.title);
+
+        ProgressBar progressBar = (ProgressBar)v.findViewById(R.id.progressBar);
         progressBar.setMax(this.progressMax);
-        progressBar.setProgress(this.progress, true);
+        ObjectAnimator.ofInt(progressBar, "progress", this.progress)
+                .setDuration(1500L * this.progress / this.progressMax)
+                .start();
+
+        TextView message = (TextView)v.findViewById(R.id.message);
         message.setText(this.message);
         return v;
     }
