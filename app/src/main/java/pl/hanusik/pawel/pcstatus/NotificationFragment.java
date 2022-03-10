@@ -19,8 +19,8 @@ public class NotificationFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_TITLE = "title";
-    private static final String ARG_MESSAGE = "message";
+    public static final String ARG_TITLE = "title";
+    public static final String ARG_MESSAGE = "message";
 
     // TODO: Rename and change types of parameters
     private String title;
@@ -54,9 +54,6 @@ public class NotificationFragment extends Fragment {
         if (getArguments() != null) {
             this.title = getArguments().getString(ARG_TITLE);
             this.message = getArguments().getString(ARG_MESSAGE);
-            this.title = "Test Title";
-            this.message = "Test message\nGASgajSG DNKSA";
-            Log.wtf("AAA", "onCreate");
         }
     }
 
@@ -69,7 +66,6 @@ public class NotificationFragment extends Fragment {
         TextView message = (TextView)v.findViewById(R.id.message);
         title.setText(this.title);
         message.setText(this.message);
-        Log.wtf("AAA", "onCreateView");
         return v;
     }
 }
