@@ -16,19 +16,13 @@ import android.widget.TextView;
  * create an instance of this fragment.
  */
 public class NotificationFragment extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String ARG_TITLE = "title";
     public static final String ARG_MESSAGE = "message";
 
-    // TODO: Rename and change types of parameters
     private String title;
     private String message;
 
-    public NotificationFragment() {
-        // Required empty public constructor
-    }
+    public NotificationFragment() {}
 
     /**
      * Use this factory method to create a new instance of
@@ -38,7 +32,6 @@ public class NotificationFragment extends Fragment {
      * @param message Parameter 2.
      * @return A new instance of fragment NotificationFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static NotificationFragment newInstance(String title, String message) {
         NotificationFragment fragment = new NotificationFragment();
         Bundle args = new Bundle();
@@ -60,7 +53,6 @@ public class NotificationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_notification, container, false);
         TextView title = (TextView)v.findViewById(R.id.title);
         TextView message = (TextView)v.findViewById(R.id.message);
