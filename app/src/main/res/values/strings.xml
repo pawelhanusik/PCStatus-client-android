@@ -13,4 +13,11 @@
     <string name="prefs_server_header">Server</string>
     <string name="prefs_server_url_title">Server address</string>
     <string name="prefs_update_refresh_interval">Interval between update requests [s]</string>
+
+    <!--  Login  -->
+    <string name="title_activity_login">Login</string>
+    <string name="prompt_username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in_short">Sign in</string>
 </resources>

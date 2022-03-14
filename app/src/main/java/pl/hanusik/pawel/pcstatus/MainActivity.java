@@ -1,7 +1,10 @@
 package pl.hanusik.pawel.pcstatus;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -27,9 +30,22 @@ public class MainActivity extends AppCompatActivity {
 
     private Client client;
     private FilterType currentlySelectedFilter = FilterType.NONE;
+    private ActivityResultLauncher<Intent> loginActivityResultLauncher = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        this.loginActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // login successful
+                        show_all();
+                    } else {
+                        // login failed for some reason
+                        startLoginActivity();
+                    }
+                });
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -40,6 +56,10 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             show_all();
         }
+    }
+
+    private void startLoginActivity() {
+        loginActivityResultLauncher.launch(new Intent(this, LoginActivity.class));
     }
 
     private void setBottomBarButtonsListeners() {
@@ -133,6 +153,11 @@ public class MainActivity extends AppCompatActivity {
                             this.addNotification(((Notification)model).title, ((Notification)model).message);
                         }
                     }
+                },
+                (error) -> {
+                    if (error == Client.Error.UNAUTHENTICATED) {
+                        startLoginActivity();
+                    }
                 }
         );
     }
@@ -148,6 +173,11 @@ public class MainActivity extends AppCompatActivity {
                             this.addProgress(((Progress)model).title, ((Progress)model).progress, ((Progress)model).progress_max, ((Progress)model).message);
                         }
                     }
+                },
+                (error) -> {
+                    if (error == Client.Error.UNAUTHENTICATED) {
+                        startLoginActivity();
+                    }
                 }
         );
     }
@@ -162,6 +192,11 @@ public class MainActivity extends AppCompatActivity {
                         if (model != null) {
                             this.addTask(((Task)model).title, ((Task)model).status, ((Task)model).message);
                         }
+                    }
+                },
+                (error) -> {
+                    if (error == Client.Error.UNAUTHENTICATED) {
+                        startLoginActivity();
                     }
                 }
         );

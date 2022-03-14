@@ -44,11 +44,17 @@ public class Client {
 
     Context context;
 
+    public enum Error {
+        UNKNOWN,
+        INVALID_URL,
+        UNEXPECTED_HTML_CODE,
+        UNAUTHENTICATED
+    }
     public interface Callback<R> {
         void onComplete(R result);
     }
 
-    Client(Context context) {
+    public Client(Context context) {
         this.context = context;
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
@@ -56,15 +62,14 @@ public class Client {
     }
 
     private void showToast(String message) {
-        Toast.makeText(this.context, message, Toast.LENGTH_SHORT)
-                .show();
+        Toast.makeText(this.context, message, Toast.LENGTH_SHORT).show();
     }
 
-    void login(Callback<Boolean> callback) {
+    public void login(String username, String password, Callback<Boolean> callback) {
         TaskRunner taskRunner = new TaskRunner();
         taskRunner.executeAsync(new Request(
                 baseUrl + "api/user/login",
-                "username=" + Client.username + "&password=" + Client.password
+                "username=" + username + "&password=" + password
         ), (Response response) -> {
             boolean result;
 
@@ -83,7 +88,11 @@ public class Client {
         });
     }
 
-    void getModelsIndex(Model.Type modelType, Callback<ArrayList<Model>> callback) {
+    void getModelsIndex(
+            Model.Type modelType,
+            Callback<ArrayList<Model>> callback,
+            Callback<Error> errorCallback
+    ) {
         String modelUrl;
 
         if (modelType == Model.Type.NOTIFICATION) {
@@ -94,6 +103,7 @@ public class Client {
             modelUrl = Task.getUrl();
         } else {
             this.showToast("Error: Trying to fetch invalid model name.");
+            errorCallback.onComplete(Error.UNKNOWN);
             return;
         }
 
@@ -103,16 +113,12 @@ public class Client {
         taskRunner.executeAsync(request, (Response response) -> {
             if (!response.success) {
                 this.showToast(context.getString(R.string.client_invalid_url));
+                errorCallback.onComplete(Error.INVALID_URL);
             } else if (response.code == 401) {
-                this.login((Boolean wasLoginSuccessful) -> {
-                    if (wasLoginSuccessful) {
-                        this.getModelsIndex(modelType, callback);
-                    } else {
-                        this.showToast(context.getString(R.string.client_invalid_credentials));
-                    }
-                });
+                errorCallback.onComplete(Error.UNAUTHENTICATED);
             } else if (response.code != 200) {
                 this.showToast("Error: HTML code: " + response.code + ".");
+                errorCallback.onComplete(Error.UNEXPECTED_HTML_CODE);
             } else {
                 Log.d("Client response", response.message);
 
@@ -137,6 +143,7 @@ public class Client {
                     callback.onComplete(ret);
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    errorCallback.onComplete(Error.UNKNOWN);
                 }
             }
         });
