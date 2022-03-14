@@ -13,9 +13,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_bar"
+        app:layout_constraintEnd_toEndOf="@id/bottom_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -23,10 +22,30 @@
             android:id="@+id/main_scroll_view_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:showDividers="middle"
             android:divider="@drawable/main_scroll_view_divider"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:orientation="vertical"
+            android:showDividers="middle"></LinearLayout>
     </ScrollView>
+
+    <View
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@drawable/bottom_bar_background"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <ImageButton
+        android:id="@+id/bar_settings"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:srcCompat="@android:drawable/ic_menu_manage"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_bar"
+        app:layout_constraintEnd_toEndOf="@id/bottom_bar"
+        tools:layout_editor_absoluteX="363dp"
+        tools:layout_editor_absoluteY="680dp"
+        android:contentDescription="settings" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

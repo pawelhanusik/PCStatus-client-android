@@ -2,7 +2,10 @@ package pl.hanusik.pawel.pcstatus;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import pl.hanusik.pawel.pcstatus.models.Model;
 import pl.hanusik.pawel.pcstatus.models.Notification;
@@ -14,6 +17,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ImageButton settingsButton = findViewById(R.id.bar_settings);
+        settingsButton.setOnClickListener((View v) -> {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        });
 
         if (savedInstanceState == null) {
             Client client = new Client(this);
