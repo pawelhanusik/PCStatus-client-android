@@ -37,10 +37,8 @@ public class Client {
      * */
 
     String baseUrl;
-    static String username = "user";
-    static String password = "password";
 
-    String token = "";
+    TokenManager tokenManager;
 
     Context context;
 
@@ -56,6 +54,7 @@ public class Client {
 
     public Client(Context context) {
         this.context = context;
+        this.tokenManager = new TokenManager(this.context);
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
         this.baseUrl = sharedPreferences.getString("server_url", "http://127.0.0.1:8000");
@@ -77,7 +76,7 @@ public class Client {
                 this.showToast(context.getString(R.string.client_invalid_url));
                 result = false;
             } else if (response.code == 200) {
-                this.token = response.message;
+                this.tokenManager.setToken(response.message);
                 result = true;
             } else {
                 this.showToast(context.getString(R.string.client_invalid_credentials));
@@ -109,7 +108,7 @@ public class Client {
 
         TaskRunner taskRunner = new TaskRunner();
         Request request = new Request(baseUrl + "api/" + modelUrl);
-        request.setToken(this.token);
+        request.setToken(this.tokenManager.getToken());
         taskRunner.executeAsync(request, (Response response) -> {
             if (!response.success) {
                 this.showToast(context.getString(R.string.client_invalid_url));
