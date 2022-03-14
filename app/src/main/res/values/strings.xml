@@ -1,10 +1,9 @@
 <resources>
     <string name="app_name">PC Status</string>
 
-    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_settings">Settings</string>
 
     <!--  Preferences  -->
-    <string name="prefs_action_bar_title">Settings</string>
     <string name="prefs_server_header">Server</string>
     <string name="prefs_server_url_title">Server address</string>
     <string name="prefs_update_refresh_interval">Interval between update requests [s]</string>
