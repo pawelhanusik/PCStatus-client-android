@@ -3,7 +3,10 @@ package pl.hanusik.pawel.pcstatus;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.widget.LinearLayout;
+
+import pl.hanusik.pawel.pcstatus.models.Model;
+import pl.hanusik.pawel.pcstatus.models.Notification;
+import pl.hanusik.pawel.pcstatus.models.Progress;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,18 +16,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
-            this.addNotification("Title 1", "Test message 1\nnew line");
-            this.addNotification("Title 2", "Download done!");
-            this.addNotification("Title 3", "Everything is all right.");
-
-            this.addProgress("P Title 1", 0, 10, "Test message 1\nnew line");
-            this.addProgress("P Title 2", 7, 10, "Download done!");
-            this.addProgress("P Title 3", 10, 10, "Everything is all right.");
-            this.addProgress("P Title 4", 90, 100, "Everything is all right.");
-
-            for (int i = 0; i < 20; ++i) {
-                this.addNotification("Test_" + i, "message");
-            }
+            Client client = new Client(this);
+            client.getModelsIndex(
+                    Model.Type.NOTIFICATION,
+                    (models) -> {
+                        for (Model model : models) {
+                            if (model != null) {
+                                this.addNotification(((Notification)model).title, ((Notification)model).message);
+                            }
+                        }
+                    }
+            );
+            client.getModelsIndex(
+                    Model.Type.PROGRESS,
+                    (models) -> {
+                        for (Model model : models) {
+                            if (model != null) {
+                                this.addProgress(((Progress)model).title, ((Progress)model).progress, ((Progress)model).progress_max, ((Progress)model).message);
+                            }
+                        }
+                    }
+            );
         }
     }
 
