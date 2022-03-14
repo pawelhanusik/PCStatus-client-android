@@ -3,6 +3,10 @@
 
     <string name="title_activity_settings">Settings</string>
 
+    <!--  Client  -->
+    <string name="client_invalid_url">Invalid URL. Please check settings.</string>
+    <string name="client_invalid_credentials">Invalid credentials.</string>
+
     <!--  Preferences  -->
     <string name="prefs_server_header">Server</string>
     <string name="prefs_server_url_title">Server address</string>

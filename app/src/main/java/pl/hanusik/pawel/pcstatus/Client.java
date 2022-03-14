@@ -1,10 +1,13 @@
 package pl.hanusik.pawel.pcstatus;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.preference.PreferenceManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -33,11 +36,11 @@ public class Client {
      * Class responsible for handling connection to backend server
      * */
 
-    static final String baseUrl = "http://127.0.0.1:8000/";
-    static final String username = "user";
-    static final String password = "password";
+    String baseUrl;
+    static String username = "user";
+    static String password = "password";
 
-    String token = "154|rgLN8uQeQPe1xRYqlX7APPODZaZp3bTQUhGYLk9n";
+    String token = "";
 
     Context context;
 
@@ -47,6 +50,9 @@ public class Client {
 
     Client(Context context) {
         this.context = context;
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
+        this.baseUrl = sharedPreferences.getString("server_url", "http://127.0.0.1:8000");
     }
 
     private void showToast(String message) {
@@ -63,13 +69,13 @@ public class Client {
             boolean result;
 
             if (!response.success) {
-                this.showToast("Invalid URL.");
+                this.showToast(context.getString(R.string.client_invalid_url));
                 result = false;
             } else if (response.code == 200) {
                 this.token = response.message;
                 result = true;
             } else {
-                this.showToast("Invalid credentials.");
+                this.showToast(context.getString(R.string.client_invalid_credentials));
                 result = false;
             }
 
@@ -96,13 +102,13 @@ public class Client {
         request.setToken(this.token);
         taskRunner.executeAsync(request, (Response response) -> {
             if (!response.success) {
-                this.showToast("Invalid URL.");
+                this.showToast(context.getString(R.string.client_invalid_url));
             } else if (response.code == 401) {
                 this.login((Boolean wasLoginSuccessful) -> {
                     if (wasLoginSuccessful) {
                         this.getModelsIndex(modelType, callback);
                     } else {
-                        this.showToast("Error: Invalid credentials.");
+                        this.showToast(context.getString(R.string.client_invalid_credentials));
                     }
                 });
             } else if (response.code != 200) {
