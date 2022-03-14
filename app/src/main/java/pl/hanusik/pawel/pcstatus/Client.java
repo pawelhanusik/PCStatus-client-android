@@ -98,10 +98,11 @@ public class Client {
             if (!response.success) {
                 this.showToast("Invalid URL.");
             } else if (response.code == 401) {
-                this.showToast("Error: Invalid credentials.");
                 this.login((Boolean wasLoginSuccessful) -> {
                     if (wasLoginSuccessful) {
                         this.getModelsIndex(modelType, callback);
+                    } else {
+                        this.showToast("Error: Invalid credentials.");
                     }
                 });
             } else if (response.code != 200) {
