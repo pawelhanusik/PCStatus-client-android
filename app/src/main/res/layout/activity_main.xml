@@ -47,5 +47,61 @@
         tools:layout_editor_absoluteY="680dp"
         android:contentDescription="settings" />
 
+    <Button
+        android:id="@+id/bar_all"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:srcCompat="@android:drawable/ic_menu_manage"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_bar"
+        app:layout_constraintStart_toStartOf="@id/bottom_bar"
+        android:text="A"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/bar_notifications"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:srcCompat="@android:drawable/ic_menu_manage"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_bar"
+        app:layout_constraintStart_toEndOf="@id/bar_all"
+        android:text="N"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/bar_progresses"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:srcCompat="@android:drawable/ic_menu_manage"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_bar"
+        app:layout_constraintStart_toEndOf="@id/bar_notifications"
+        android:text="P"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/bar_tasks"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:srcCompat="@android:drawable/ic_menu_manage"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_bar"
+        app:layout_constraintStart_toEndOf="@id/bar_progresses"
+        android:text="T"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

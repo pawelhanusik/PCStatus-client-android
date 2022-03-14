@@ -3,6 +3,8 @@
 
     <string name="title_activity_settings">Settings</string>
 
+    <string name="nothing_to_show">Nothing to show</string>
+
     <!--  Client  -->
     <string name="client_invalid_url">Invalid URL. Please check settings.</string>
     <string name="client_invalid_credentials">Invalid credentials.</string>
