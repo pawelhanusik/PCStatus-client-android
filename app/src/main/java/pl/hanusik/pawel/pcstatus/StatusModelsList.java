@@ -1,6 +1,7 @@
 package pl.hanusik.pawel.pcstatus;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,7 +33,14 @@ public class StatusModelsList {
 
     private StatusModelsRepository statusModelsRepository;
 
-    StatusModelsList(Client client, FragmentManager fragmentManager, LinearLayout linearLayout) {
+    Runnable refreshRunnable;
+    Handler refreshHandler;
+
+    StatusModelsList(Client client,
+                     FragmentManager fragmentManager,
+                     LinearLayout linearLayout,
+                     int refreshIntervalMs) {
+
         this.fragmentManager = fragmentManager;
         this.linearLayout = linearLayout;
         this.client = client;
@@ -42,6 +50,13 @@ public class StatusModelsList {
         this.onFetchDoneCallback = Void -> {
             this.updateList();
         };
+
+        this.refreshRunnable = () -> {
+            fetch(currentlySelectedFilter);
+            refreshHandler.postDelayed(refreshRunnable, refreshIntervalMs);
+        };
+        this.refreshHandler = new Handler();
+        this.refreshHandler.postDelayed(refreshRunnable, refreshIntervalMs);
     }
 
     public void setOnFetchErrorCallback(Callback<Client.Error> onFetchErrorCallback) {
@@ -52,6 +67,7 @@ public class StatusModelsList {
         if (this.currentlySelectedFilter != filterType) {
             this.currentlySelectedFilter = filterType;
 
+            this.refreshList();
             this.fetch(this.currentlySelectedFilter);
         }
     }
@@ -67,7 +83,7 @@ public class StatusModelsList {
                 this.addModel(model);
             } else if (
                     this.currentlySelectedFilter == FilterType.NOTIFICATION
-                    && model instanceof Notification
+                            && model instanceof Notification
             ) {
                 this.addModel(model);
             } else if (
@@ -151,8 +167,6 @@ public class StatusModelsList {
     // FETCHING
 
     public void fetch(StatusModelsList.FilterType filterType) {
-        this.refreshList();
-
         if (filterType == StatusModelsList.FilterType.ALL) {
             fetch_notifications();
             fetch_progresses();

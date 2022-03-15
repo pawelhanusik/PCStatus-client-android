@@ -3,20 +3,15 @@ package pl.hanusik.pawel.pcstatus;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import pl.hanusik.pawel.pcstatus.models.Model;
-import pl.hanusik.pawel.pcstatus.models.Notification;
-import pl.hanusik.pawel.pcstatus.models.Progress;
-import pl.hanusik.pawel.pcstatus.models.Task;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> loginActivityResultLauncher = null;
@@ -45,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         this.statusModelsList = new StatusModelsList(
                 client,
                 getSupportFragmentManager(),
-                findViewById(R.id.main_scroll_view_ll)
+                findViewById(R.id.main_scroll_view_ll),
+                this.getRefreshIntervalMs()
         );
         this.statusModelsList.setOnFetchErrorCallback((error) -> {
             if (error == Client.Error.UNAUTHENTICATED) {
@@ -56,6 +52,14 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             this.statusModelsList.applyFilter(StatusModelsList.FilterType.ALL);
         }
+    }
+
+    private int getRefreshIntervalMs() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        // TODO: store update_refresh_interval already as int
+        return Integer.parseInt(
+                sharedPreferences.getString("update_refresh_interval", "10")
+        ) * 1000;
     }
 
     private void startLoginActivity() {

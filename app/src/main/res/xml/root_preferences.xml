@@ -9,7 +9,7 @@
             app:useSimpleSummaryProvider="true" />
 
         <EditTextPreference
-            app:defaultValue="5"
+            app:defaultValue="10"
             app:key="update_refresh_interval"
             app:title="@string/prefs_update_refresh_interval"
             app:useSimpleSummaryProvider="true" />
