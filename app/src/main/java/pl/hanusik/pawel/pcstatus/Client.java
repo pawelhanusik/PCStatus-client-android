@@ -36,20 +36,15 @@ public class Client {
      * Class responsible for handling connection to backend server
      * */
 
-    String baseUrl;
-
-    TokenManager tokenManager;
-
-    Context context;
+    private String baseUrl;
+    private TokenManager tokenManager;
+    private Context context;
 
     public enum Error {
         UNKNOWN,
         INVALID_URL,
         UNEXPECTED_HTML_CODE,
         UNAUTHENTICATED
-    }
-    public interface Callback<R> {
-        void onComplete(R result);
     }
 
     public Client(Context context) {
@@ -131,11 +126,20 @@ public class Client {
                         JSONObject modelJson = modelsJson.getJSONObject(i);
 
                         if (modelType == Model.Type.NOTIFICATION) {
-                            ret.add(Notification.fromJson(modelJson));
+                            Notification model = Notification.fromJson(modelJson);
+                            if (model != null) {
+                                ret.add(model);
+                            }
                         } else if (modelType == Model.Type.PROGRESS) {
-                            ret.add(Progress.fromJson(modelJson));
+                            Progress model = Progress.fromJson(modelJson);
+                            if (model != null) {
+                                ret.add(model);
+                            }
                         } else if (modelType == Model.Type.TASK) {
-                            ret.add(Task.fromJson(modelJson));
+                            Task model = Task.fromJson(modelJson);
+                            if (model != null) {
+                                ret.add(model);
+                            }
                         }
                     }
 

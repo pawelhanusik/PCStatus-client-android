@@ -19,18 +19,8 @@ import pl.hanusik.pawel.pcstatus.models.Progress;
 import pl.hanusik.pawel.pcstatus.models.Task;
 
 public class MainActivity extends AppCompatActivity {
-
-    private enum FilterType {
-        NONE,
-        ALL,
-        NOTIFICATION,
-        PROGRESS,
-        TASK
-    }
-
-    private Client client;
-    private FilterType currentlySelectedFilter = FilterType.NONE;
     private ActivityResultLauncher<Intent> loginActivityResultLauncher = null;
+    private StatusModelsList statusModelsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // login successful
-                        show_all();
+                        this.statusModelsList.applyFilter(StatusModelsList.FilterType.ALL);
                     } else {
                         // login failed for some reason
                         startLoginActivity();
@@ -51,10 +41,20 @@ public class MainActivity extends AppCompatActivity {
 
         this.setBottomBarButtonsListeners();
 
-        this.client = new Client(this);
+        Client client = new Client(this);
+        this.statusModelsList = new StatusModelsList(
+                client,
+                getSupportFragmentManager(),
+                findViewById(R.id.main_scroll_view_ll)
+        );
+        this.statusModelsList.setOnFetchErrorCallback((error) -> {
+            if (error == Client.Error.UNAUTHENTICATED) {
+                startLoginActivity();
+            }
+        });
 
         if (savedInstanceState == null) {
-            show_all();
+            this.statusModelsList.applyFilter(StatusModelsList.FilterType.ALL);
         }
     }
 
@@ -75,158 +75,18 @@ public class MainActivity extends AppCompatActivity {
         Button tasksButton = findViewById(R.id.bar_tasks);
 
         allButton.setOnClickListener(v -> {
-            this.show_all();
+            this.statusModelsList.applyFilter(StatusModelsList.FilterType.ALL);
         });
         notificationsButton.setOnClickListener(v -> {
-            this.show_notifications();
+            this.statusModelsList.applyFilter(StatusModelsList.FilterType.NOTIFICATION);
         });
         progressesButton.setOnClickListener(v -> {
-            this.show_progresses();
+            this.statusModelsList.applyFilter(StatusModelsList.FilterType.PROGRESS);
         });
         tasksButton.setOnClickListener(v -> {
-            this.show_tasks();
+            this.statusModelsList.applyFilter(StatusModelsList.FilterType.TASK);
         });
     }
 
-    private void show_all() {
-        if (this.currentlySelectedFilter == FilterType.ALL) {
-            return;
-        }
-        this.currentlySelectedFilter = FilterType.ALL;
-        this.show_clear_all();
 
-        this.fetch_notifications();
-        this.fetch_progresses();
-        this.fetch_tasks();
-    }
-    private void show_notifications() {
-        if (this.currentlySelectedFilter == FilterType.NOTIFICATION) {
-            return;
-        }
-        this.currentlySelectedFilter = FilterType.NOTIFICATION;
-        this.show_clear_all();
-
-        this.fetch_notifications();
-    }
-    private void show_progresses() {
-        if (this.currentlySelectedFilter == FilterType.PROGRESS) {
-            return;
-        }
-        this.currentlySelectedFilter = FilterType.PROGRESS;
-        this.show_clear_all();
-
-        this.fetch_progresses();
-    }
-    private void show_tasks() {
-        if (this.currentlySelectedFilter == FilterType.TASK) {
-            return;
-        }
-        this.currentlySelectedFilter = FilterType.TASK;
-        this.show_clear_all();
-
-        this.fetch_tasks();
-    }
-    private void show_clear_all() {
-        LinearLayout ll = findViewById(R.id.main_scroll_view_ll);
-        ll.removeAllViews();
-    }
-    private void nothing_to_show() {
-        LinearLayout ll = findViewById(R.id.main_scroll_view_ll);
-
-        if (ll.getChildCount() == 0) {
-            TextView nothingToShowTV = new TextView(this);
-            nothingToShowTV.setText(getString(R.string.nothing_to_show));
-
-            ll.addView(nothingToShowTV);
-        }
-    }
-
-    private void fetch_notifications() {
-        this.client.getModelsIndex(
-                Model.Type.NOTIFICATION,
-                (models) -> {
-                    if (models.size() == 0) {
-                        this.nothing_to_show();
-                    }
-                    for (Model model : models) {
-                        if (model != null) {
-                            this.addNotification(((Notification)model).title, ((Notification)model).message);
-                        }
-                    }
-                },
-                (error) -> {
-                    if (error == Client.Error.UNAUTHENTICATED) {
-                        startLoginActivity();
-                    }
-                }
-        );
-    }
-    private void fetch_progresses() {
-        this.client.getModelsIndex(
-                Model.Type.PROGRESS,
-                (models) -> {
-                    if (models.size() == 0) {
-                        this.nothing_to_show();
-                    }
-                    for (Model model : models) {
-                        if (model != null) {
-                            this.addProgress(((Progress)model).title, ((Progress)model).progress, ((Progress)model).progress_max, ((Progress)model).message);
-                        }
-                    }
-                },
-                (error) -> {
-                    if (error == Client.Error.UNAUTHENTICATED) {
-                        startLoginActivity();
-                    }
-                }
-        );
-    }
-    private void fetch_tasks() {
-        this.client.getModelsIndex(
-                Model.Type.TASK,
-                (models) -> {
-                    if (models.size() == 0) {
-                        this.nothing_to_show();
-                    }
-                    for (Model model : models) {
-                        if (model != null) {
-                            this.addTask(((Task)model).title, ((Task)model).status, ((Task)model).message);
-                        }
-                    }
-                },
-                (error) -> {
-                    if (error == Client.Error.UNAUTHENTICATED) {
-                        startLoginActivity();
-                    }
-                }
-        );
-    }
-
-    private void addNotification(String title, String message) {
-        Bundle args = new Bundle();
-        args.putString(NotificationFragment.ARG_TITLE, title);
-        args.putString(NotificationFragment.ARG_MESSAGE, message);
-
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .add(R.id.main_scroll_view_ll, NotificationFragment.class, args)
-                .commit();
-    }
-
-    private void addProgress(String title, int progress, int progressMax, String message) {
-        Bundle args = new Bundle();
-        args.putString(ProgressFragment.ARG_TITLE, title);
-        args.putInt(ProgressFragment.ARG_PROGRESS, progress);
-        args.putInt(ProgressFragment.ARG_PROGRESS_MAX, progressMax);
-        args.putString(ProgressFragment.ARG_MESSAGE, message);
-
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .add(R.id.main_scroll_view_ll, ProgressFragment.class, args)
-                .commit();
-    }
-
-    private void addTask(String title, Task.Status status, String message) {
-        // TODO:
-    }
 }
