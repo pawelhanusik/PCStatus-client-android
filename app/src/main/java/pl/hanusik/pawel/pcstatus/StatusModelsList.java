@@ -1,6 +1,7 @@
 package pl.hanusik.pawel.pcstatus;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -61,17 +62,24 @@ public class StatusModelsList {
 
     private void updateList() {
         this.statusModelsRepository.commit(this::addModel);
-
-        if (this.statusModelsRepository.size() == 0) {
-            this.nothing_to_show();
-        }
+        this.nothing_to_show();
     }
 
     private void nothing_to_show() {
-        TextView nothingToShowTV = new TextView(this.linearLayout.getContext());
-        nothingToShowTV.setText(this.linearLayout.getContext().getString(R.string.nothing_to_show));
+        if (this.statusModelsRepository.size() == 0) {
+            TextView nothingToShowTV = new TextView(this.linearLayout.getContext());
+            nothingToShowTV.setText(this.linearLayout.getContext().getString(R.string.nothing_to_show));
 
-        this.linearLayout.addView(nothingToShowTV);
+            this.linearLayout.addView(nothingToShowTV);
+        } else {
+            for (int i = 0; i < this.linearLayout.getChildCount(); ++i) {
+                View v = this.linearLayout.getChildAt(i);
+                if (v instanceof TextView) {
+                    this.linearLayout.removeViewAt(i);
+                    break;
+                }
+            }
+        }
     }
 
     private void addModel(Model model) {
