@@ -187,7 +187,8 @@ public class StatusModelsList {
                     this.statusModelsRepository.batchAdd(models);
                     this.onFetchDoneCallback.onComplete(null);
                 },
-                this.onFetchErrorCallback
+                this.onFetchErrorCallback,
+                this.statusModelsRepository.getLastUpdateDate()
         );
     }
 
@@ -198,7 +199,8 @@ public class StatusModelsList {
                     this.statusModelsRepository.batchAdd(models);
                     this.onFetchDoneCallback.onComplete(null);
                 },
-                this.onFetchErrorCallback
+                this.onFetchErrorCallback,
+                this.statusModelsRepository.getLastUpdateDate()
         );
     }
 
@@ -209,7 +211,8 @@ public class StatusModelsList {
                     this.statusModelsRepository.batchAdd(models);
                     this.onFetchDoneCallback.onComplete(null);
                 },
-                this.onFetchErrorCallback
+                this.onFetchErrorCallback,
+                this.statusModelsRepository.getLastUpdateDate()
         );
     }
 }

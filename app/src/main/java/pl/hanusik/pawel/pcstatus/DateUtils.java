@@ -16,6 +16,11 @@ public class DateUtils {
         return null;
     }
 
+    static public String getStringFromDate(Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        return format.format(date);
+    }
+
     static public Date getNewer(Date dateA, Date dateB) {
         if (dateA == null) {
             return dateB;

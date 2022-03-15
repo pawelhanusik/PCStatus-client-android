@@ -22,6 +22,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -85,7 +86,8 @@ public class Client {
     void getModelsIndex(
             Model.Type modelType,
             Callback<ArrayList<Model>> callback,
-            Callback<Error> errorCallback
+            Callback<Error> errorCallback,
+            Date fromDate
     ) {
         String modelUrl;
 
@@ -102,7 +104,11 @@ public class Client {
         }
 
         TaskRunner taskRunner = new TaskRunner();
-        Request request = new Request(baseUrl + "api/" + modelUrl);
+        String url = baseUrl + "api/" + modelUrl;
+        if (fromDate != null) {
+            url += "?fromDate=" + DateUtils.getStringFromDate(fromDate);
+        }
+        Request request = new Request(url);
         request.setToken(this.tokenManager.getToken());
         taskRunner.executeAsync(request, (Response response) -> {
             if (!response.success) {
