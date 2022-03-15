@@ -1,6 +1,7 @@
 package pl.hanusik.pawel.pcstatus;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -69,10 +70,12 @@ public class StatusModelsRepository {
 
     private Storage committed;
     private Storage staged;
+    private Date lastUpdateDate;
 
     public StatusModelsRepository() {
         this.committed = new Storage();
         this.staged = new Storage();
+        this.lastUpdateDate = null;
     }
 
     public int size() {
@@ -84,11 +87,19 @@ public class StatusModelsRepository {
         this.staged.clear();
     }
 
+    public Date getLastUpdateDate() {
+        return lastUpdateDate;
+    }
+
     public void batchAdd(ArrayList<Model> models) {
+        for (Model model : models) {
+            this.lastUpdateDate = DateUtils.getNewer(this.lastUpdateDate, model.updated_at);
+        }
         this.staged.batchAdd(models);
     }
 
     public void addOrUpdate(Model model) {
+        this.lastUpdateDate = DateUtils.getNewer(this.lastUpdateDate, model.updated_at);
         this.staged.addOrUpdate(model);
     }
 

@@ -3,6 +3,8 @@ package pl.hanusik.pawel.pcstatus.models;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import pl.hanusik.pawel.pcstatus.DateUtils;
+
 public class Task extends Model {
     public enum Status {
         UNKNOWN,
@@ -27,6 +29,7 @@ public class Task extends Model {
             model.title = json.getString("title");
             model.status = Task.stringToStatus(json.getString("status"));
             model.message = json.getString("message");
+            model.updated_at =  DateUtils.getDateFromString(json.getString("updated_at"));
 
             return model;
         } catch (JSONException e) {

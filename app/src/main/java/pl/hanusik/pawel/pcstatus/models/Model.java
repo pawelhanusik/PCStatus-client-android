@@ -2,6 +2,8 @@ package pl.hanusik.pawel.pcstatus.models;
 
 import org.json.JSONObject;
 
+import java.util.Date;
+
 public class Model {
     public enum Type {
         NOTIFICATION,
@@ -10,6 +12,7 @@ public class Model {
     }
 
     public int id;
+    public Date updated_at;
 
     public static String getUrl() {
         return "";
