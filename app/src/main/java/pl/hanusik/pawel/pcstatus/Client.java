@@ -125,21 +125,18 @@ public class Client {
                     for (int i = 0; i < modelsCount; ++i) {
                         JSONObject modelJson = modelsJson.getJSONObject(i);
 
+                        Model model = null;
+
                         if (modelType == Model.Type.NOTIFICATION) {
-                            Notification model = Notification.fromJson(modelJson);
-                            if (model != null) {
-                                ret.add(model);
-                            }
+                            model = Notification.fromJson(modelJson);
                         } else if (modelType == Model.Type.PROGRESS) {
-                            Progress model = Progress.fromJson(modelJson);
-                            if (model != null) {
-                                ret.add(model);
-                            }
-                        } else if (modelType == Model.Type.TASK) {
-                            Task model = Task.fromJson(modelJson);
-                            if (model != null) {
-                                ret.add(model);
-                            }
+                            model = Progress.fromJson(modelJson);
+                        } else {
+                            model = Task.fromJson(modelJson);
+                        }
+
+                        if (model != null) {
+                            ret.add(model);
                         }
                     }
 
