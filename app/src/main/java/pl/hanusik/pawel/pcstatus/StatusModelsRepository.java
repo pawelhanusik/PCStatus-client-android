@@ -40,14 +40,18 @@ public class StatusModelsRepository {
             }
         }
 
-        public void addOrUpdate(Model model) {
+        public boolean addOrUpdate(Model model) {
             if (model instanceof Notification) {
-                this.notifications.put(model.id, (Notification) model);
-            } else if (model instanceof Progress) {
-                this.progresses.put(model.id, (Progress) model);
-            } else if (model instanceof Task) {
-                this.tasks.put(model.id, (Task) model);
+                return (this.notifications.put(model.id, (Notification) model) == null);
             }
+            if (model instanceof Progress) {
+                return (this.progresses.put(model.id, (Progress) model) == null);
+            }
+            if (model instanceof Task) {
+                return (this.tasks.put(model.id, (Task) model) == null);
+            }
+
+            return true;
         }
 
         public void foreach(Callback<Model> foreachOperation) {
@@ -88,10 +92,14 @@ public class StatusModelsRepository {
         this.staged.addOrUpdate(model);
     }
 
-    public void commit(Callback<Model> callback) {
+    public void commit(Callback<Model> onAdd, Callback<Model> onUpdate) {
         this.staged.foreach(model -> {
-            this.committed.addOrUpdate(model);
-            callback.onComplete(model);
+            boolean isValueNew = this.committed.addOrUpdate(model);
+            if (isValueNew) {
+                onAdd.onComplete(model);
+            } else {
+                onUpdate.onComplete(model);
+            }
         });
         this.staged.clear();
     }

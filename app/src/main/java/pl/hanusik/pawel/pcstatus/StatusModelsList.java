@@ -60,8 +60,32 @@ public class StatusModelsList {
         this.linearLayout.removeAllViews();
     }
 
+    private void refreshList() {
+        this.clearList();
+        this.statusModelsRepository.foreach(model -> {
+            if (this.currentlySelectedFilter == FilterType.ALL) {
+                this.addModel(model);
+            } else if (
+                    this.currentlySelectedFilter == FilterType.NOTIFICATION
+                    && model instanceof Notification
+            ) {
+                this.addModel(model);
+            } else if (
+                    this.currentlySelectedFilter == FilterType.PROGRESS
+                            && model instanceof Progress
+            ) {
+                this.addModel(model);
+            } else if (
+                    this.currentlySelectedFilter == FilterType.TASK
+                            && model instanceof Task
+            ) {
+                this.addModel(model);
+            }
+        });
+    }
+
     private void updateList() {
-        this.statusModelsRepository.commit(this::addModel);
+        this.statusModelsRepository.commit(this::addModel, this::updateModel);
         this.nothing_to_show();
     }
 
@@ -92,6 +116,10 @@ public class StatusModelsList {
         }
     }
 
+    private void updateModel(Model model) {
+        // TODO: implement
+    }
+
     private void addNotification(Notification notification) {
         Bundle args = new Bundle();
         args.putString(NotificationFragment.ARG_TITLE, notification.title);
@@ -117,14 +145,13 @@ public class StatusModelsList {
     }
 
     private void addTask(Task task) {
-        // TODO:
+        // TODO: implement
     }
 
     // FETCHING
 
     public void fetch(StatusModelsList.FilterType filterType) {
-        clearList();
-        this.statusModelsRepository.clear();
+        this.refreshList();
 
         if (filterType == StatusModelsList.FilterType.ALL) {
             fetch_notifications();
