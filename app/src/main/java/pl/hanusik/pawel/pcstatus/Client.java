@@ -206,7 +206,6 @@ public class Client {
                 int len;
                 byte[] buffer = new byte[1024];
                 while (-1 != (len = is.read(buffer))) {
-                    bo = new ByteArrayOutputStream();
                     bo.write(buffer, 0, len);
                 }
                 return bo.toString();
