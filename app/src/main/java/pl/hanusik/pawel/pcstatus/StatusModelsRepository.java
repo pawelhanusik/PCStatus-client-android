@@ -75,7 +75,10 @@ public class StatusModelsRepository {
     public StatusModelsRepository() {
         this.committed = new Storage();
         this.staged = new Storage();
-        this.lastUpdateDate = null;
+        this.lastUpdateDate = DateUtils.minusDays(
+                DateUtils.getCurrentDate(),
+                1
+        );
     }
 
     public int size() {

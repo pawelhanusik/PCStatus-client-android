@@ -106,9 +106,7 @@ public class Client {
         TaskRunner taskRunner = new TaskRunner();
         String url = baseUrl + "api/" + modelUrl;
         if (fromDate != null) {
-            url += "?count=5&fromDate=" + DateUtils.getStringFromDate(fromDate);
-        } else {
-            url += "?count=5";
+            url += "?fromDate=" + DateUtils.getStringFromDate(fromDate);
         }
         Request request = new Request(url);
         request.setToken(this.tokenManager.getToken());

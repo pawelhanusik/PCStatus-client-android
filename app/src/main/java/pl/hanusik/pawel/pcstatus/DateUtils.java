@@ -5,6 +5,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DateUtils {
+    static public Date getCurrentDate() {
+        return new Date();
+    }
+
+    static public Date minusDays(Date date, long days) {
+        date.setTime(
+                date.getTime() - (days * 24 * 3600 * 1000)
+        );
+        return date;
+    }
+
     static public Date getDateFromString(String str) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         try {
