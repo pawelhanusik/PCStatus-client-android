@@ -27,6 +27,8 @@ public class ProgressFragment extends Fragment {
     private int progressMax;
     private String message;
 
+    private ProgressBar progressBar;
+
     public ProgressFragment() {}
 
     /**
@@ -67,7 +69,7 @@ public class ProgressFragment extends Fragment {
         TextView title = (TextView)v.findViewById(R.id.title);
         title.setText(this.title);
 
-        ProgressBar progressBar = (ProgressBar)v.findViewById(R.id.progressBar);
+        this.progressBar = (ProgressBar)v.findViewById(R.id.progressBar);
         progressBar.setMax(this.progressMax);
         ObjectAnimator.ofInt(progressBar, "progress", this.progress)
                 .setDuration(1500L * this.progress / this.progressMax)
@@ -76,5 +78,13 @@ public class ProgressFragment extends Fragment {
         TextView message = (TextView)v.findViewById(R.id.message);
         message.setText(this.message);
         return v;
+    }
+
+    public void updateProgress(int newProgress) {
+        this.progress = newProgress;
+
+        ObjectAnimator.ofInt(this.progressBar, "progress", this.progress)
+                .setDuration(1500L * this.progress / this.progressMax)
+                .start();
     }
 }

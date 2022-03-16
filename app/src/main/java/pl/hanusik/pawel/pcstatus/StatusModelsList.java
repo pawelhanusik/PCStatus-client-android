@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import androidx.fragment.app.FragmentManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import pl.hanusik.pawel.pcstatus.models.Model;
 import pl.hanusik.pawel.pcstatus.models.Notification;
 import pl.hanusik.pawel.pcstatus.models.Progress;
@@ -27,6 +30,8 @@ public class StatusModelsList {
     private LinearLayout linearLayout;
     private Client client;
     private FilterType currentlySelectedFilter = FilterType.NONE;
+
+    private Map<Integer, ProgressFragment> progressFragmentMap;
 
     private Callback<Client.Error> onFetchErrorCallback;
     private Callback<Void> onFetchDoneCallback = Void -> {};
@@ -48,6 +53,8 @@ public class StatusModelsList {
 
         this.statusModelsRepository = new StatusModelsRepository();
         this.setOnFetchErrorCallback(error -> {});
+
+        this.progressFragmentMap = new HashMap<>();
 
         this.onFetchDoneCallback = Void -> {
             this.updateList();
@@ -143,7 +150,14 @@ public class StatusModelsList {
     }
 
     private void updateModel(Model model) {
-        // TODO: implement
+        if (model instanceof Progress) {
+            ProgressFragment fragment = this.progressFragmentMap.get(model.id);
+            if (fragment != null) {
+                fragment.updateProgress(((Progress) model).progress);;
+            }
+        } else if (model instanceof Task) {
+            // TODO: implement
+        }
     }
 
     private void addNotification(Notification notification) {
@@ -158,15 +172,23 @@ public class StatusModelsList {
     }
 
     private void addProgress(Progress progress) {
-        Bundle args = new Bundle();
-        args.putString(ProgressFragment.ARG_TITLE, progress.title);
-        args.putInt(ProgressFragment.ARG_PROGRESS, progress.progress);
-        args.putInt(ProgressFragment.ARG_PROGRESS_MAX, progress.progress_max);
-        args.putString(ProgressFragment.ARG_MESSAGE, progress.message);
+//        Bundle args = new Bundle();
+//        args.putString(ProgressFragment.ARG_TITLE, progress.title);
+//        args.putInt(ProgressFragment.ARG_PROGRESS, progress.progress);
+//        args.putInt(ProgressFragment.ARG_PROGRESS_MAX, progress.progress_max);
+//        args.putString(ProgressFragment.ARG_MESSAGE, progress.message);
+//
+//        this.fragmentManager.beginTransaction()
+//                .setReorderingAllowed(true)
+//                .add(R.id.main_scroll_view_ll, ProgressFragment.class, args)
+//                .commit();
+        ProgressFragment fragment = ProgressFragment.newInstance(progress.title, progress.progress, progress.progress_max, progress.message);
+
+        this.progressFragmentMap.put(progress.id, fragment);
 
         this.fragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
-                .add(R.id.main_scroll_view_ll, ProgressFragment.class, args)
+                .add(R.id.main_scroll_view_ll, fragment)
                 .commit();
     }
 
