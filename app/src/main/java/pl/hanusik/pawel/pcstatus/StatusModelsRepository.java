@@ -2,7 +2,7 @@ package pl.hanusik.pawel.pcstatus;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import pl.hanusik.pawel.pcstatus.models.Model;
@@ -18,9 +18,9 @@ public class StatusModelsRepository {
         private Map<Integer, Task> tasks;
 
         public Storage() {
-            this.notifications = new HashMap<>();
-            this.progresses = new HashMap<>();
-            this.tasks = new HashMap<>();
+            this.notifications = new LinkedHashMap<>();
+            this.progresses = new LinkedHashMap<>();
+            this.tasks = new LinkedHashMap<>();
         }
 
         public int size() {
