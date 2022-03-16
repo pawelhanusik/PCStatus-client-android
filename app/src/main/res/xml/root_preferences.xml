@@ -14,6 +14,12 @@
             app:title="@string/prefs_update_refresh_interval"
             app:useSimpleSummaryProvider="true" />
 
+        <EditTextPreference
+            app:defaultValue="android_client"
+            app:key="token_name"
+            app:title="@string/prefs_token_name"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

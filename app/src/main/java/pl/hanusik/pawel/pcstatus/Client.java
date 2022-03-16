@@ -39,6 +39,7 @@ public class Client {
 
     private String baseUrl;
     private TokenManager tokenManager;
+    private String tokenName;
     private Context context;
 
     public enum Error {
@@ -54,6 +55,7 @@ public class Client {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
         this.baseUrl = sharedPreferences.getString("server_url", "http://127.0.0.1:8000");
+        this.tokenName = sharedPreferences.getString("prefs_token_name", "android_client");
     }
 
     private void showToast(String message) {
@@ -64,7 +66,7 @@ public class Client {
         TaskRunner taskRunner = new TaskRunner();
         taskRunner.executeAsync(new Request(
                 baseUrl + "api/user/login",
-                "username=" + username + "&password=" + password
+                "username=" + username + "&password=" + password + "&token_name=" + this.tokenName
         ), (Response response) -> {
             boolean result;
 

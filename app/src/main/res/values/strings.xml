@@ -13,6 +13,7 @@
     <string name="prefs_server_header">Server</string>
     <string name="prefs_server_url_title">Server address</string>
     <string name="prefs_update_refresh_interval">Interval between update requests [s]</string>
+    <string name="prefs_token_name">Device name</string>
 
     <!--  Login  -->
     <string name="title_activity_login">Login</string>
