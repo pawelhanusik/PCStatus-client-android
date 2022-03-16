@@ -18,13 +18,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <pl.hanusik.pawel.pcstatus.ReversedLinearLayout
             android:id="@+id/main_scroll_view_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:divider="@drawable/main_scroll_view_divider"
             android:orientation="vertical"
-            android:showDividers="middle"></LinearLayout>
+            android:showDividers="middle"></pl.hanusik.pawel.pcstatus.ReversedLinearLayout>
     </ScrollView>
 
     <View
