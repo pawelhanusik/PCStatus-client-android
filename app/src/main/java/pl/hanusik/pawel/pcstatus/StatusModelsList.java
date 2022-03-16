@@ -28,13 +28,14 @@ public class StatusModelsList {
     private Client client;
     private FilterType currentlySelectedFilter = FilterType.NONE;
 
-    private Callback<Client.Error> onFetchErrorCallback = error -> {};
+    private Callback<Client.Error> onFetchErrorCallback;
     private Callback<Void> onFetchDoneCallback = Void -> {};
 
     private StatusModelsRepository statusModelsRepository;
 
-    Runnable refreshRunnable;
-    Handler refreshHandler;
+    private int runnableRefreshIntervalMs;
+    private Runnable refreshRunnable;
+    private Handler refreshHandler;
 
     StatusModelsList(Client client,
                      FragmentManager fragmentManager,
@@ -46,24 +47,33 @@ public class StatusModelsList {
         this.client = client;
 
         this.statusModelsRepository = new StatusModelsRepository();
+        this.setOnFetchErrorCallback(error -> {});
 
         this.onFetchDoneCallback = Void -> {
             this.updateList();
         };
 
+        this.runnableRefreshIntervalMs = refreshIntervalMs;
         this.refreshRunnable = () -> {
             fetch(currentlySelectedFilter);
             refreshHandler.postDelayed(refreshRunnable, refreshIntervalMs);
         };
         this.refreshHandler = new Handler();
-        this.refreshHandler.postDelayed(refreshRunnable, refreshIntervalMs);
+        this.startUpdateRunnable();
     }
 
     public void setOnFetchErrorCallback(Callback<Client.Error> onFetchErrorCallback) {
-        this.onFetchErrorCallback = onFetchErrorCallback;
+        this.onFetchErrorCallback = error -> {
+            if (error == Client.Error.UNAUTHENTICATED) {
+                this.stopUpdateRunnable();
+            }
+            onFetchErrorCallback.onComplete(error);
+        };
     }
 
     public void applyFilter(FilterType filterType) {
+        this.startUpdateRunnable();
+
         if (this.currentlySelectedFilter != filterType) {
             this.currentlySelectedFilter = filterType;
 
@@ -162,6 +172,17 @@ public class StatusModelsList {
 
     private void addTask(Task task) {
         // TODO: implement
+    }
+
+    // UPDATE RUNNABLE
+
+    private void startUpdateRunnable() {
+        this.stopUpdateRunnable();
+        this.refreshHandler.postDelayed(refreshRunnable, this.runnableRefreshIntervalMs);
+    }
+
+    private void stopUpdateRunnable() {
+        this.refreshHandler.removeCallbacks(this.refreshRunnable);
     }
 
     // FETCHING
