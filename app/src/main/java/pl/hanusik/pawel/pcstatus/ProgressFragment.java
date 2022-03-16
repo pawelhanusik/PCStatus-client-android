@@ -37,8 +37,8 @@ public class ProgressFragment extends Fragment {
      * @param message Parameter 2.
      * @return A new instance of fragment NotificationFragment.
      */
-    public static NotificationFragment newInstance(String title, int progress, int progress_max, String message) {
-        NotificationFragment fragment = new NotificationFragment();
+    public static ProgressFragment newInstance(String title, int progress, int progress_max, String message) {
+        ProgressFragment fragment = new ProgressFragment();
         Bundle args = new Bundle();
         args.putString(ARG_TITLE, title);
         args.putInt(ARG_PROGRESS, progress);
