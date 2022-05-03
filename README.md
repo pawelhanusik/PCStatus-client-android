@@ -14,6 +14,6 @@ The consists of 3 subprograms:
 
 The goal of the project is to add new feature to the smartphone by connecting it with pc. By doing so it will gain remote monitoring functionalities.
 
-## Usa cases
+## Use cases
 
 Progress of any bash script, any process, monitoring RAM, cpu usage & more.
