@@ -71,8 +71,9 @@ public class ProgressFragment extends Fragment {
 
         this.progressBar = (ProgressBar)v.findViewById(R.id.progressBar);
         progressBar.setMax(this.progressMax);
+
         ObjectAnimator.ofInt(progressBar, "progress", this.progress)
-                .setDuration(1500L * this.progress / this.progressMax)
+                .setDuration(this.getDuration())
                 .start();
 
         TextView message = (TextView)v.findViewById(R.id.message);
@@ -84,7 +85,19 @@ public class ProgressFragment extends Fragment {
         this.progress = newProgress;
 
         ObjectAnimator.ofInt(this.progressBar, "progress", this.progress)
-                .setDuration(1500L * this.progress / this.progressMax)
+                .setDuration(this.getDuration())
                 .start();
+    }
+
+    private long getDuration() {
+        long duration;
+
+        if (this.progressMax != 0) {
+            duration = 1500L * this.progress / this.progressMax;
+        } else {
+            duration = 0;
+        }
+
+        return duration;
     }
 }
