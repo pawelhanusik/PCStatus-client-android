@@ -19,6 +19,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
 
+    private Client client;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +34,7 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        Client client = new Client(this);
+        client = new Client(this);
 
         final EditText usernameEditText = binding.username;
         final EditText passwordEditText = binding.password;
@@ -59,6 +61,12 @@ public class LoginActivity extends AppCompatActivity {
                 );
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        client.refreshSettings();
     }
 
     @Override

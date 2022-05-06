@@ -58,6 +58,12 @@ public class Client {
         this.tokenName = sharedPreferences.getString("prefs_token_name", "android_client");
     }
 
+    public void refreshSettings() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
+        this.baseUrl = sharedPreferences.getString("server_url", "http://127.0.0.1:8000");
+        this.tokenName = sharedPreferences.getString("prefs_token_name", "android_client");
+    }
+
     private void showToast(String message) {
         Toast.makeText(this.context, message, Toast.LENGTH_SHORT).show();
     }

@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityResultLauncher<Intent> loginActivityResultLauncher = null;
     private StatusModelsList statusModelsList;
 
+    private Client client;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         this.loginActivityResultLauncher = registerForActivityResult(
@@ -36,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         this.setBottomBarButtonsListeners();
 
-        Client client = new Client(this);
+        client = new Client(this);
         this.statusModelsList = new StatusModelsList(
                 client,
                 getSupportFragmentManager(),
@@ -52,6 +54,12 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             this.statusModelsList.applyFilter(StatusModelsList.FilterType.ALL);
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        client.refreshSettings();
     }
 
     private int getRefreshIntervalMs() {
