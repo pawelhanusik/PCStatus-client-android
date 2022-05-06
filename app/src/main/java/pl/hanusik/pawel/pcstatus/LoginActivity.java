@@ -17,15 +17,13 @@ import pl.hanusik.pawel.pcstatus.databinding.ActivityLoginBinding;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private ActivityLoginBinding binding;
-
     private Client client;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        binding = ActivityLoginBinding.inflate(getLayoutInflater());
+        ActivityLoginBinding binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         ImageButton settingsButton = findViewById(R.id.login_activity_bar_settings);
@@ -41,25 +39,22 @@ public class LoginActivity extends AppCompatActivity {
         final Button loginButton = binding.login;
         final ProgressBar loadingProgressBar = binding.loading;
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                client.login(
-                    usernameEditText.getText().toString(),
-                    passwordEditText.getText().toString(),
-                    (wasLoginSuccessful) -> {
-                        loadingProgressBar.setVisibility(View.GONE);
+        loginButton.setOnClickListener(v -> {
+            loadingProgressBar.setVisibility(View.VISIBLE);
+            client.login(
+                usernameEditText.getText().toString(),
+                passwordEditText.getText().toString(),
+                (wasLoginSuccessful) -> {
+                    loadingProgressBar.setVisibility(View.GONE);
 
-                        if (wasLoginSuccessful) {
-                            setResult(Activity.RESULT_OK);
-                            finish();
-                        } else {
-                            showLoginFailed();
-                        }
+                    if (wasLoginSuccessful) {
+                        setResult(Activity.RESULT_OK);
+                        finish();
+                    } else {
+                        showLoginFailed();
                     }
-                );
-            }
+                }
+            );
         });
     }
 

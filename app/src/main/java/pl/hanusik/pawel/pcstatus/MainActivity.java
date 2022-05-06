@@ -86,18 +86,10 @@ public class MainActivity extends AppCompatActivity {
         Button progressesButton = findViewById(R.id.bar_progresses);
         Button tasksButton = findViewById(R.id.bar_tasks);
 
-        allButton.setOnClickListener(v -> {
-            this.statusModelsList.applyFilter(StatusModelsList.FilterType.ALL);
-        });
-        notificationsButton.setOnClickListener(v -> {
-            this.statusModelsList.applyFilter(StatusModelsList.FilterType.NOTIFICATION);
-        });
-        progressesButton.setOnClickListener(v -> {
-            this.statusModelsList.applyFilter(StatusModelsList.FilterType.PROGRESS);
-        });
-        tasksButton.setOnClickListener(v -> {
-            this.statusModelsList.applyFilter(StatusModelsList.FilterType.TASK);
-        });
+        allButton.setOnClickListener(v -> this.statusModelsList.applyFilter(StatusModelsList.FilterType.ALL));
+        notificationsButton.setOnClickListener(v -> this.statusModelsList.applyFilter(StatusModelsList.FilterType.NOTIFICATION));
+        progressesButton.setOnClickListener(v -> this.statusModelsList.applyFilter(StatusModelsList.FilterType.PROGRESS));
+        tasksButton.setOnClickListener(v -> this.statusModelsList.applyFilter(StatusModelsList.FilterType.TASK));
     }
 
 

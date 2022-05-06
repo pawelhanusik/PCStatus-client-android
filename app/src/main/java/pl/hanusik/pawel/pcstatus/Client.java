@@ -37,10 +37,10 @@ public class Client {
      * Class responsible for handling connection to backend server
      * */
 
+    private final TokenManager tokenManager;
+    private final Context context;
     private String baseUrl;
-    private TokenManager tokenManager;
     private String tokenName;
-    private Context context;
 
     public enum Error {
         UNKNOWN,
@@ -139,7 +139,7 @@ public class Client {
                     for (int i = 0; i < modelsCount; ++i) {
                         JSONObject modelJson = modelsJson.getJSONObject(i);
 
-                        Model model = null;
+                        Model model;
 
                         if (modelType == Model.Type.NOTIFICATION) {
                             model = Notification.fromJson(modelJson);
@@ -172,9 +172,7 @@ public class Client {
                 final T result;
                 try {
                     result = callable.call();
-                    handler.post(() -> {
-                        callback.onComplete(result);
-                    });
+                    handler.post(() -> callback.onComplete(result));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -189,7 +187,7 @@ public class Client {
     }
 
     private static class Request implements Callable<Response> {
-        private String url;
+        private final String url;
         private String postfields = null;
         private String token = null;
 
