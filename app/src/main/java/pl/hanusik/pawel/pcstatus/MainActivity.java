@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
 
     private ActivityResultLauncher<Intent> loginActivityResultLauncher = null;
+    private boolean loginActivityStarted = false;
     private StatusModelsList statusModelsList;
 
     private Client client;
@@ -32,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
         this.loginActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
+                    loginActivityStarted = false;
+
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         // login successful
                         this.statusModelsList.applyFilter(StatusModelsList.FilterType.ALL);
@@ -115,7 +118,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startLoginActivity() {
-        loginActivityResultLauncher.launch(new Intent(this, LoginActivity.class));
+        if (!loginActivityStarted) {
+            loginActivityStarted = true;
+            loginActivityResultLauncher.launch(new Intent(this, LoginActivity.class));
+        }
     }
 
     private void setupBottomBar() {
