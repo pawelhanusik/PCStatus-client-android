@@ -13,6 +13,7 @@
     <string name="client_invalid_url">Invalid URL. Please check settings.</string>
     <string name="client_invalid_credentials">Invalid credentials.</string>
     <string name="client_unknown_error">Unknown error.</string>
+    <string name="client_token_name_change_please_logout">Device name change: please re-login.</string>
 
     <!--  Preferences  -->
     <string name="prefs_server_header">Server</string>

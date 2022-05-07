@@ -61,7 +61,19 @@ public class Client {
     public void refreshSettings() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
         this.baseUrl = sharedPreferences.getString("server_url", "http://127.0.0.1:8000");
-        this.tokenName = sharedPreferences.getString("prefs_token_name", "android_client");
+        String newTokenName = sharedPreferences.getString("token_name", "android_client");
+        if (!newTokenName.equals(this.tokenName)) {
+            this.changeTokenName(newTokenName);
+        }
+    }
+
+    private void changeTokenName(String newTokenName) {
+        this.tokenName = newTokenName;
+        this.logout((success) -> {
+            if (!success) {
+                this.showToast(context.getString(R.string.client_token_name_change_please_logout));
+            }
+        });
     }
 
     private void showToast(String message) {
