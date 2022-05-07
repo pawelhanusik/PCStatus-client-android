@@ -26,19 +26,19 @@ public class StatusModelsList {
         TASK
     }
 
-    private FragmentManager fragmentManager;
-    private LinearLayout linearLayout;
-    private Client client;
+    private final FragmentManager fragmentManager;
+    private final LinearLayout linearLayout;
+    private final Client client;
     private FilterType currentlySelectedFilter = FilterType.NONE;
 
-    private Map<Integer, ProgressFragment> progressFragmentMap;
+    private final Map<Integer, ProgressFragment> progressFragmentMap;
 
     private Callback<Client.Error> onFetchErrorCallback;
-    private Callback<Void> onFetchDoneCallback = Void -> {};
+    private Callback<Void> onFetchDoneCallback;
 
-    private StatusModelsRepository statusModelsRepository;
+    private final StatusModelsRepository statusModelsRepository;
 
-    private int runnableRefreshIntervalMs;
+    private final int runnableRefreshIntervalMs;
     private Runnable refreshRunnable;
     private Handler refreshHandler;
 
@@ -56,9 +56,7 @@ public class StatusModelsList {
 
         this.progressFragmentMap = new HashMap<>();
 
-        this.onFetchDoneCallback = Void -> {
-            this.updateList();
-        };
+        this.onFetchDoneCallback = Void -> this.updateList();
 
         this.runnableRefreshIntervalMs = refreshIntervalMs;
         this.refreshRunnable = () -> {
@@ -119,24 +117,6 @@ public class StatusModelsList {
 
     private void updateList() {
         this.statusModelsRepository.commit(this::addModel, this::updateModel);
-        this.nothing_to_show();
-    }
-
-    private void nothing_to_show() {
-        if (this.statusModelsRepository.size() == 0) {
-            TextView nothingToShowTV = new TextView(this.linearLayout.getContext());
-            nothingToShowTV.setText(this.linearLayout.getContext().getString(R.string.nothing_to_show));
-
-            this.linearLayout.addView(nothingToShowTV);
-        } else {
-            for (int i = 0; i < this.linearLayout.getChildCount(); ++i) {
-                View v = this.linearLayout.getChildAt(i);
-                if (v instanceof TextView) {
-                    this.linearLayout.removeViewAt(i);
-                    break;
-                }
-            }
-        }
     }
 
     private void addModel(Model model) {
@@ -153,7 +133,7 @@ public class StatusModelsList {
         if (model instanceof Progress) {
             ProgressFragment fragment = this.progressFragmentMap.get(model.id);
             if (fragment != null) {
-                fragment.updateProgress(((Progress) model).progress);;
+                fragment.updateProgress(((Progress) model).progress);
             }
         } else if (model instanceof Task) {
             // TODO: implement
@@ -172,16 +152,6 @@ public class StatusModelsList {
     }
 
     private void addProgress(Progress progress) {
-//        Bundle args = new Bundle();
-//        args.putString(ProgressFragment.ARG_TITLE, progress.title);
-//        args.putInt(ProgressFragment.ARG_PROGRESS, progress.progress);
-//        args.putInt(ProgressFragment.ARG_PROGRESS_MAX, progress.progress_max);
-//        args.putString(ProgressFragment.ARG_MESSAGE, progress.message);
-//
-//        this.fragmentManager.beginTransaction()
-//                .setReorderingAllowed(true)
-//                .add(R.id.main_scroll_view_ll, ProgressFragment.class, args)
-//                .commit();
         ProgressFragment fragment = ProgressFragment.newInstance(progress.title, progress.progress, progress.progress_max, progress.message);
 
         this.progressFragmentMap.put(progress.id, fragment);
