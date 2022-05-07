@@ -5,9 +5,14 @@
 
     <string name="nothing_to_show">Nothing to show</string>
 
+    <!--  Main Menu  -->
+    <string name="main_menu_item_settings">Settings</string>
+    <string name="main_menu_item_logout">Logout</string>
+
     <!--  Client  -->
     <string name="client_invalid_url">Invalid URL. Please check settings.</string>
     <string name="client_invalid_credentials">Invalid credentials.</string>
+    <string name="client_unknown_error">Unknown error.</string>
 
     <!--  Preferences  -->
     <string name="prefs_server_header">Server</string>
