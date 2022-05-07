@@ -6,7 +6,7 @@ import android.content.SharedPreferences;
 import androidx.preference.PreferenceManager;
 
 public class TokenManager {
-    private SharedPreferences sharedPreferences;
+    private final SharedPreferences sharedPreferences;
 
     TokenManager(Context context) {
         this.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -19,5 +19,8 @@ public class TokenManager {
         sharedPreferences.edit()
                 .putString("token", token)
                 .apply();
+    }
+    public void clearToken() {
+        this.setToken("");
     }
 }

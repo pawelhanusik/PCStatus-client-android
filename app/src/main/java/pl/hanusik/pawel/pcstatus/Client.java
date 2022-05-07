@@ -91,6 +91,39 @@ public class Client {
         });
     }
 
+    public void logout() {
+        this.logout(null);
+    }
+
+    public void logout(Callback<Boolean> callback) {
+        TaskRunner taskRunner = new TaskRunner();
+
+        Request request = new Request(
+                baseUrl + "api/user/logout",
+                "a=a"
+        );
+        request.setToken(this.tokenManager.getToken());
+
+        taskRunner.executeAsync(request, (Response response) -> {
+            boolean result;
+
+            if (!response.success) {
+                this.showToast(context.getString(R.string.client_invalid_url));
+                result = false;
+            } else if (response.code == 200) {
+                this.tokenManager.clearToken();
+                result = true;
+            } else {
+                this.showToast(context.getString(R.string.client_unknown_error));
+                result = false;
+            }
+
+            if (callback != null) {
+                callback.onComplete(result);
+            }
+        });
+    }
+
     void getModelsIndex(
             Model.Type modelType,
             Callback<ArrayList<Model>> callback,
