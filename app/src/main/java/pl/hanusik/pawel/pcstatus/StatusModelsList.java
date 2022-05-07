@@ -30,6 +30,7 @@ public class StatusModelsList {
     private FilterType currentlySelectedFilter = FilterType.NONE;
 
     private final Map<Integer, ProgressFragment> progressFragmentMap;
+    private final Map<Integer, TaskFragment> taskFragmentMap;
 
     private Callback<Client.Error> onFetchErrorCallback;
     private Callback<Void> onFetchDoneCallback;
@@ -53,6 +54,7 @@ public class StatusModelsList {
         this.setOnFetchErrorCallback(error -> {});
 
         this.progressFragmentMap = new HashMap<>();
+        this.taskFragmentMap = new HashMap<>();
 
         this.onFetchDoneCallback = Void -> this.updateList();
 
@@ -134,18 +136,19 @@ public class StatusModelsList {
                 fragment.updateProgress(((Progress) model).progress);
             }
         } else if (model instanceof Task) {
-            // TODO: implement
+            TaskFragment fragment = this.taskFragmentMap.get(model.id);
+            if (fragment != null) {
+                fragment.updateStatus(((Task) model).status);
+            }
         }
     }
 
     private void addNotification(Notification notification) {
-        Bundle args = new Bundle();
-        args.putString(NotificationFragment.ARG_TITLE, notification.title);
-        args.putString(NotificationFragment.ARG_MESSAGE, notification.message);
+        NotificationFragment fragment = NotificationFragment.newInstance(notification.title, notification.message);
 
         this.fragmentManager.beginTransaction()
                 .setReorderingAllowed(true)
-                .add(R.id.main_scroll_view_ll, NotificationFragment.class, args)
+                .add(R.id.main_scroll_view_ll, fragment)
                 .commit();
     }
 
@@ -161,7 +164,14 @@ public class StatusModelsList {
     }
 
     private void addTask(Task task) {
-        // TODO: implement
+        TaskFragment fragment = TaskFragment.newInstance(task.title, task.status, task.message);
+
+        this.taskFragmentMap.put(task.id, fragment);
+
+        this.fragmentManager.beginTransaction()
+                .setReorderingAllowed(true)
+                .add(R.id.main_scroll_view_ll, fragment)
+                .commit();
     }
 
     // UPDATE RUNNABLE

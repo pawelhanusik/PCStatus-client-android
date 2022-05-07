@@ -13,6 +13,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_notification.xml" value="0.34791666666666665" />
         <entry key="app/src/main/res/layout/fragment_progress.xml" value="0.30480072463768115" />
+        <entry key="app/src/main/res/layout/fragment_task.xml" value="0.17708333333333334" />
         <entry key="app/src/main/res/layout/settings_activity.xml" value="0.153125" />
         <entry key="app/src/main/res/menu/main_menu.xml" value="0.21875" />
         <entry key="app/src/main/res/xml/root_preferences.xml" value="0.153125" />
