@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void logout() {
         this.client.logout();
+        this.startLoginActivity();
     }
 
     private int getRefreshIntervalMs() {
