@@ -20,6 +20,12 @@
             app:title="@string/prefs_token_name"
             app:useSimpleSummaryProvider="true" />
 
+        <CheckBoxPreference
+            app:defaultValue="false"
+            android:key="show_filters"
+            android:title="@string/prefs_show_filters"
+            app:useSimpleSummaryProvider="true" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

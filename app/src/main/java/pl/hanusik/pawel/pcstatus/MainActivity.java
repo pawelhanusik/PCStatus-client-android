@@ -3,6 +3,7 @@ package pl.hanusik.pawel.pcstatus;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.preference.PreferenceManager;
 
 import android.app.Activity;
@@ -17,6 +18,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
+    SharedPreferences sharedPreferences;
+
     private ActivityResultLauncher<Intent> loginActivityResultLauncher = null;
     private StatusModelsList statusModelsList;
 
@@ -24,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         this.loginActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -39,7 +44,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        this.setBottomBarButtonsListeners();
+        if (this.getShowFiltersBool()) {
+            this.setupBottomBar();
+        }
 
         client = new Client(this);
         this.statusModelsList = new StatusModelsList(
@@ -97,18 +104,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getRefreshIntervalMs() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         // TODO: store update_refresh_interval already as int
         return Integer.parseInt(
                 sharedPreferences.getString("update_refresh_interval", "10")
         ) * 1000;
     }
 
+    private boolean getShowFiltersBool() {
+        return sharedPreferences.getBoolean("show_filters", false);
+    }
+
     private void startLoginActivity() {
         loginActivityResultLauncher.launch(new Intent(this, LoginActivity.class));
     }
 
-    private void setBottomBarButtonsListeners() {
+    private void setupBottomBar() {
+        ConstraintLayout bottomBarContainer = findViewById(R.id.bottom_bar_container);
+        bottomBarContainer.setVisibility(View.VISIBLE);
+
         ImageButton settingsButton = findViewById(R.id.bar_settings);
         settingsButton.setOnClickListener((View v) -> {
             Intent intent = new Intent(this, SettingsActivity.class);
@@ -125,6 +138,4 @@ public class MainActivity extends AppCompatActivity {
         progressesButton.setOnClickListener(v -> this.statusModelsList.applyFilter(StatusModelsList.FilterType.PROGRESS));
         tasksButton.setOnClickListener(v -> this.statusModelsList.applyFilter(StatusModelsList.FilterType.TASK));
     }
-
-
 }
