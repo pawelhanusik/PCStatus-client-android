@@ -2,7 +2,7 @@
 
 PC Status – monitoring tool for processes running on pc
 
-The consists of 3 subprograms:
+The project consists of 3 subprograms:
 
 - [PC Status API](https://github.com/pawelhanusik/PCStatus-api)
 
