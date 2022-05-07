@@ -70,9 +70,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        statusModelsList.stopUpdateRunnable();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         client.refreshSettings();
+        statusModelsList.startUpdateRunnable();
     }
 
     @Override

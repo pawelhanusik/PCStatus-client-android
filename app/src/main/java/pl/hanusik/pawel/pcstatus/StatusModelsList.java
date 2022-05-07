@@ -2,9 +2,7 @@ package pl.hanusik.pawel.pcstatus;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.fragment.app.FragmentManager;
 
@@ -168,12 +166,12 @@ public class StatusModelsList {
 
     // UPDATE RUNNABLE
 
-    private void startUpdateRunnable() {
+    public void startUpdateRunnable() {
         this.stopUpdateRunnable();
         this.refreshHandler.postDelayed(refreshRunnable, this.runnableRefreshIntervalMs);
     }
 
-    private void stopUpdateRunnable() {
+    public void stopUpdateRunnable() {
         this.refreshHandler.removeCallbacks(this.refreshRunnable);
     }
 
