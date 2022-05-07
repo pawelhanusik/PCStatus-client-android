@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private int getRefreshIntervalMs() {
-        // TODO: store update_refresh_interval already as int
         return Integer.parseInt(
                 sharedPreferences.getString("update_refresh_interval", "10")
         ) * 1000;
