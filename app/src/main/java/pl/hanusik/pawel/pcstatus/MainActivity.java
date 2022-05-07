@@ -123,10 +123,7 @@ public class MainActivity extends AppCompatActivity {
         bottomBarContainer.setVisibility(View.VISIBLE);
 
         ImageButton settingsButton = findViewById(R.id.bar_settings);
-        settingsButton.setOnClickListener((View v) -> {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-        });
+        settingsButton.setOnClickListener((View v) -> this.startSettingsActivity());
 
         Button allButton = findViewById(R.id.bar_all);
         Button notificationsButton = findViewById(R.id.bar_notifications);

@@ -100,7 +100,7 @@ public class Client {
 
         Request request = new Request(
                 baseUrl + "api/user/logout",
-                "a=a"
+                ""
         );
         request.setToken(this.tokenManager.getToken());
 
