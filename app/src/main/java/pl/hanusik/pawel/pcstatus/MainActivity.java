@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        client.refreshSettings();
         statusModelsList.startUpdateRunnable();
     }
 

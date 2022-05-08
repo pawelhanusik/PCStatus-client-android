@@ -53,21 +53,37 @@ public class Client {
         this.context = context;
         this.tokenManager = new TokenManager(this.context);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
-        this.baseUrl = sharedPreferences.getString("server_url", "http://127.0.0.1:8000");
-        this.tokenName = sharedPreferences.getString("prefs_token_name", "android_client");
+        this.handleSharedPreferences();
     }
 
-    public void refreshSettings() {
+    private void handleSharedPreferences() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.context);
+
+        this.tokenName = sharedPreferences.getString("prefs_token_name", "android_client");
         this.baseUrl = sharedPreferences.getString("server_url", "http://127.0.0.1:8000");
-        String newTokenName = sharedPreferences.getString("token_name", "android_client");
-        if (!newTokenName.equals(this.tokenName)) {
-            this.changeTokenName(newTokenName);
-        }
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener((SharedPreferences sharedPreferences1, String key) -> {
+            if (key.equals("token_name")) {
+                this.changeTokenName(
+                        sharedPreferences1.getString("token_name", "android_client")
+                );
+            } else if (key.equals("server_url")) {
+                this.changeBaseUrl(
+                    sharedPreferences1.getString("server_url", "http://127.0.0.1:8000")
+                );
+            }
+        });
+    }
+
+    private void changeBaseUrl(String newBaseUrl) {
+        this.baseUrl = newBaseUrl;
     }
 
     private void changeTokenName(String newTokenName) {
+        if (this.tokenName.equals(newTokenName)) {
+            return;
+        }
+
         this.tokenName = newTokenName;
         this.logout((success) -> {
             if (!success) {

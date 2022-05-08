@@ -59,12 +59,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        client.refreshSettings();
-    }
-
-    @Override
     public void onBackPressed() {
         setResult(Activity.RESULT_CANCELED);
         super.onBackPressed();
