@@ -37,9 +37,10 @@ public class StatusModelsList {
 
     private final StatusModelsRepository statusModelsRepository;
 
-    private final int runnableRefreshIntervalMs;
+    private int runnableRefreshIntervalMs;
     private Runnable refreshRunnable;
     private Handler refreshHandler;
+    private boolean isUpdateRunnableRunning = false;
 
     StatusModelsList(Client client,
                      FragmentManager fragmentManager,
@@ -61,7 +62,7 @@ public class StatusModelsList {
         this.runnableRefreshIntervalMs = refreshIntervalMs;
         this.refreshRunnable = () -> {
             fetch(currentlySelectedFilter);
-            refreshHandler.postDelayed(refreshRunnable, refreshIntervalMs);
+            refreshHandler.postDelayed(refreshRunnable, this.runnableRefreshIntervalMs);
         };
         this.refreshHandler = new Handler();
         this.startUpdateRunnable();
@@ -74,6 +75,16 @@ public class StatusModelsList {
             }
             onFetchErrorCallback.onComplete(error);
         };
+    }
+
+    public void setUpdateRefreshInterval(int newUpdateRefreshInterval) {
+        if (this.isUpdateRunnableRunning) {
+            this.stopUpdateRunnable();
+            this.runnableRefreshIntervalMs = newUpdateRefreshInterval;
+            this.startUpdateRunnable();
+        } else {
+            this.runnableRefreshIntervalMs = newUpdateRefreshInterval;
+        }
     }
 
     public void applyFilter(FilterType filterType) {
@@ -179,10 +190,12 @@ public class StatusModelsList {
     public void startUpdateRunnable() {
         this.stopUpdateRunnable();
         this.refreshHandler.postDelayed(refreshRunnable, this.runnableRefreshIntervalMs);
+        this.isUpdateRunnableRunning = true;
     }
 
     public void stopUpdateRunnable() {
         this.refreshHandler.removeCallbacks(this.refreshRunnable);
+        this.isUpdateRunnableRunning = false;
     }
 
     // FETCHING

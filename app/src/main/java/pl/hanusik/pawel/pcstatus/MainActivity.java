@@ -18,18 +18,16 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 public class MainActivity extends AppCompatActivity {
-    SharedPreferences sharedPreferences;
 
     private ActivityResultLauncher<Intent> loginActivityResultLauncher = null;
     private boolean loginActivityStarted = false;
     private StatusModelsList statusModelsList;
 
     private Client client;
+    private int updateRefreshInterval = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
         this.loginActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -47,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (this.getShowFiltersBool()) {
-            this.setupBottomBar();
-        }
+        this.setupBottomBar();
+
+        this.handleSharedPreferences();
 
         client = new Client(this);
         this.statusModelsList = new StatusModelsList(
@@ -67,8 +65,6 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             this.statusModelsList.applyFilter(StatusModelsList.FilterType.ALL);
         }
-
-        this.refreshSettings();
     }
 
     @Override
@@ -105,14 +101,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void refreshSettings() {
-        this.sharedPreferences.registerOnSharedPreferenceChangeListener((SharedPreferences sharedPreferences, String key) -> {
+    private void handleSharedPreferences() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        this.changeBottomBarVisibility(
+            sharedPreferences.getBoolean("show_filters", false)
+        );
+
+        this.setRefreshIntervalMs(sharedPreferences.getString("update_refresh_interval", "10"));
+
+        sharedPreferences.registerOnSharedPreferenceChangeListener((SharedPreferences sharedPreferences1, String key) -> {
             if (key.equals("show_filters")) {
                 this.changeBottomBarVisibility(
-                    sharedPreferences.getBoolean("show_filters", false)
+                    sharedPreferences1.getBoolean("show_filters", false)
                 );
+            } else if (key.equals("update_refresh_interval")) {
+                this.setRefreshIntervalMs(sharedPreferences1.getString("update_refresh_interval", "10"));
+                this.statusModelsList.setUpdateRefreshInterval(this.getRefreshIntervalMs());
             }
         });
+    }
+
+    private void setRefreshIntervalMs(String newRefreshIntervalMs) {
+        this.updateRefreshInterval = Integer.parseInt(newRefreshIntervalMs) * 1000;
+    }
+
+    private int getRefreshIntervalMs() {
+        return this.updateRefreshInterval;
     }
 
     private void startSettingsActivity() {
@@ -125,16 +140,6 @@ public class MainActivity extends AppCompatActivity {
         this.startLoginActivity();
     }
 
-    private int getRefreshIntervalMs() {
-        return Integer.parseInt(
-                sharedPreferences.getString("update_refresh_interval", "10")
-        ) * 1000;
-    }
-
-    private boolean getShowFiltersBool() {
-        return sharedPreferences.getBoolean("show_filters", false);
-    }
-
     private void startLoginActivity() {
         if (!loginActivityStarted) {
             loginActivityStarted = true;
@@ -143,8 +148,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupBottomBar() {
-        this.changeBottomBarVisibility(true);
-
         ImageButton settingsButton = findViewById(R.id.bar_settings);
         settingsButton.setOnClickListener((View v) -> this.startSettingsActivity());
 
