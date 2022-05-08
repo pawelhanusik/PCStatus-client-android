@@ -67,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             this.statusModelsList.applyFilter(StatusModelsList.FilterType.ALL);
         }
+
+        this.refreshSettings();
     }
 
     @Override
@@ -104,6 +106,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void refreshSettings() {
+        this.sharedPreferences.registerOnSharedPreferenceChangeListener((SharedPreferences sharedPreferences, String key) -> {
+            if (key.equals("show_filters")) {
+                this.changeBottomBarVisibility(
+                    sharedPreferences.getBoolean("show_filters", false)
+                );
+            }
+        });
+    }
+
     private void startSettingsActivity() {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
@@ -132,8 +144,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupBottomBar() {
-        ConstraintLayout bottomBarContainer = findViewById(R.id.bottom_bar_container);
-        bottomBarContainer.setVisibility(View.VISIBLE);
+        this.changeBottomBarVisibility(true);
 
         ImageButton settingsButton = findViewById(R.id.bar_settings);
         settingsButton.setOnClickListener((View v) -> this.startSettingsActivity());
@@ -147,5 +158,15 @@ public class MainActivity extends AppCompatActivity {
         notificationsButton.setOnClickListener(v -> this.statusModelsList.applyFilter(StatusModelsList.FilterType.NOTIFICATION));
         progressesButton.setOnClickListener(v -> this.statusModelsList.applyFilter(StatusModelsList.FilterType.PROGRESS));
         tasksButton.setOnClickListener(v -> this.statusModelsList.applyFilter(StatusModelsList.FilterType.TASK));
+    }
+
+    private void changeBottomBarVisibility(boolean visible) {
+        ConstraintLayout bottomBarContainer = findViewById(R.id.bottom_bar_container);
+
+        if (visible) {
+            bottomBarContainer.setVisibility(View.VISIBLE);
+        } else {
+            bottomBarContainer.setVisibility(View.GONE);
+        }
     }
 }
