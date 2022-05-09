@@ -1,6 +1,5 @@
 package pl.hanusik.pawel.pcstatus;
 
-import android.os.Bundle;
 import android.os.Handler;
 import android.widget.LinearLayout;
 
